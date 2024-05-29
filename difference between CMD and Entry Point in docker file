@@ -1,0 +1,101 @@
+In Docker, `CMD` and `ENTRYPOINT` are both instructions used in Dockerfiles to specify the commands that will run when a container is started. However, they have distinct purposes and behaviors.
+
+### CMD
+
+The `CMD` instruction provides default commands and/or parameters for a container. It can be overridden by the command line arguments provided when you start the container.
+
+**Syntax:**
+
+```dockerfile
+CMD ["executable","param1","param2"]
+```
+
+or
+
+```dockerfile
+CMD command param1 param2
+```
+
+**Example:**
+
+```dockerfile
+FROM ubuntu
+CMD ["echo", "Hello, World!"]
+```
+
+When you run this container, it will execute the `echo "Hello, World!"` command by default.
+
+```sh
+docker run <image>
+```
+
+If you provide a different command when starting the container, it will override the `CMD` instruction.
+
+```sh
+docker run <image> echo "Goodbye, World!"
+```
+
+### ENTRYPOINT
+
+The `ENTRYPOINT` instruction configures a container that will run as an executable. Unlike `CMD`, the command specified in `ENTRYPOINT` will not be overridden by command line arguments provided when starting the container. Instead, those arguments will be appended to the `ENTRYPOINT` command.
+
+**Syntax:**
+
+```dockerfile
+ENTRYPOINT ["executable", "param1", "param2"]
+```
+
+or
+
+```dockerfile
+ENTRYPOINT command param1 param2
+```
+
+**Example:**
+
+```dockerfile
+FROM ubuntu
+ENTRYPOINT ["echo"]
+```
+
+When you run this container, it will use `echo` as the executable, and any arguments provided at runtime will be passed to `echo`.
+
+```sh
+docker run <image> "Hello, World!"
+```
+
+This will output `Hello, World!`.
+
+### Combining CMD and ENTRYPOINT
+
+You can use both `CMD` and `ENTRYPOINT` together. In this case, `CMD` provides default arguments to the `ENTRYPOINT` command, but you can still override them at runtime.
+
+**Example:**
+
+```dockerfile
+FROM ubuntu
+ENTRYPOINT ["echo"]
+CMD ["Hello, World!"]
+```
+
+When you run this container, it will execute `echo Hello, World!` by default.
+
+```sh
+docker run <image>
+```
+
+If you provide arguments at runtime, they will override the `CMD` arguments.
+
+```sh
+docker run <image> "Goodbye, World!"
+```
+
+This will output `Goodbye, World!`.
+
+### Summary
+
+- `CMD` sets default commands and/or parameters for the container, which can be overridden at runtime.
+- `ENTRYPOINT` sets the executable for the container, with any arguments provided at runtime appended to it.
+- Combining `ENTRYPOINT` and `CMD` allows you to set a default command that can be overridden while ensuring a specific executable is always used.
+
+Understanding the difference and appropriate use of `CMD` and `ENTRYPOINT` is crucial for creating flexible and reusable Docker images.
